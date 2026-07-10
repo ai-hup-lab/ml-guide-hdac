@@ -1,0 +1,24 @@
+# Data and weights are distributed on request, never committed.
+data/
+checkpoints/
+external/
+results/
+*.npz
+*.npy
+*.pt
+*.pth
+*.joblib
+*.xlsx
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
