@@ -1,0 +1,66 @@
+# The dataset archive
+
+This repository ships code only. The data and the trained model weights are distributed
+separately, on request, while the manuscript is under review.
+
+## Obtaining it
+
+Request `hdac-reproduction-archive.zip` (about 3.2 GB) from the authors.
+
+## Using it
+
+```bash
+unzip hdac-reproduction-archive.zip
+scripts/verify_archive.sh hdac-reproduction-archive
+cp -r hdac-reproduction-archive/{data,results} /path/to/ml-guide-hdac/
+cd /path/to/ml-guide-hdac && scripts/reproduce_all.sh
+```
+
+**Verify before you use it.** The archive carries `MANIFEST.sha256`, a checksum for every file.
+This matters more than it usually would: the representation caches are *positional*, meaning row 7
+of a cache corresponds to row 7 of the matching CSV with nothing inside the file recording that.
+A truncated or partial transfer therefore yields confident predictions for the wrong molecules
+rather than an error. The pipeline asserts row counts, but the checksums are the real guard.
+
+## Contents
+
+| Path | What it is |
+|---|---|
+| `data/*.csv` | The splits: train (1811), fit (1629), val (182), test (201), and the pooled source |
+| `data/5-fold CV splits/` | The five fixed cross-validation folds |
+| `data/virutal_screening_series/` | The 60-compound design series |
+| `data/<rep>_fpts/` | Cached representations as `{train,test}_set_fingerprint.npz`, for `<rep>` in ecfp4, rdkit, mordred, padel, base_grover, finetuned_grover |
+| `results/final-classification-models/` | The 18 final heads (6 representations × 3 classifiers) |
+| `results/final-cv-classifier-result/` | The 90 per-fold heads |
+| `results/cv_representation_finetuned_grover/` | Per-fold GROVER encoders and their embeddings |
+| `results/finetuned_model_grover/` | GROVER encoder fine-tuned on the full training set |
+| `results/pretrained_model_grover/` | The pretrained `grover_large.pt` |
+| `results/final-virtual-screening-result/` | Screening embeddings and the published screening output |
+| `expected_output/` | Our own reproduction outputs, for file-by-file comparison |
+
+## Two file layouts you may encounter
+
+The cached representations come in two internal forms, and code that assumes one crashes on the
+other. `src/hdac/io.py` handles both; use `load_feature_matrix` rather than calling `np.load`
+directly.
+
+- GROVER embeddings are true `.npz` archives with the array under the key `fps`.
+- The rule-based descriptor caches are a raw `.npy` payload written to a `.npz` filename, which
+  `np.load` returns as a plain array.
+
+## What you can and cannot reproduce
+
+**Can:** every published number. Loading the distributed models and scoring them reproduces the
+held-out table, the cross-validation table and the screening table. `scripts/reproduce_all.sh`
+checks this automatically and fails if anything disagrees.
+
+**Cannot:** the weights themselves, bit for bit. Training depended on library versions, thread
+counts and GPU non-determinism that are not pinned. This is why the models are distributed rather
+than the recipe alone.
+
+## Third-party components
+
+`results/pretrained_model_grover/grover_large.pt` is the pretrained checkpoint from
+[GROVER](https://github.com/tencent-ailab/grover), released under the MIT License. It is included
+so the archive is self-contained; it is not our work and can also be downloaded from that
+repository.
