@@ -3,44 +3,52 @@
 # Finetune a pretrained GROVER checkpoint on the HDAC activity classification task.
 #
 # Usage:
-#   scripts/finetune_grover.sh                       # uses VAL_CSV if present (recommended)
-#   VAL_CSV=data/val_set.csv scripts/finetune_grover.sh
+#   TRAIN_CSV=$DATA_DIR/fit_set.csv VAL_CSV=$DATA_DIR/val_set.csv scripts/finetune_grover.sh
 #
-# Validation set setup:
-#   You can set VAL_CSV to held-out validation molecules.
-#   Otherwise, it defaults to using the test set.
+# VAL_CSV is required and must be disjoint from the test set. GROVER uses it for
+# early stopping and best-checkpoint selection, so pointing it at the test set makes
+# the reported test performance optimistically biased.
+#
+# The dataset distributed by the authors already contains the split used here:
+#   fit_set.csv    1629 molecules  training proper
+#   val_set.csv     182 molecules  checkpoint selection
+#   test_set.csv    201 molecules  held out, never seen during training
+# fit_set.csv and val_set.csv partition train_set.csv; both are disjoint from the
+# test set. Set TRAIN_CSV to the fit split, not to train_set.csv, or the validation
+# molecules will also be trained on.
 
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/config.sh"
 
+# Checked first: it costs nothing and it is the mistake most likely to be made.
+if [ -z "${VAL_CSV:-}" ]; then
+    echo "Error: VAL_CSV is not set." >&2
+    echo "  A validation set disjoint from the test set is required: GROVER selects its" >&2
+    echo "  best checkpoint on it, so reusing the test set biases the reported result." >&2
+    echo "  Create one with src/make_validation_split.py -- see the header of this script." >&2
+    exit 1
+fi
+
 require_dir  "$GROVER_ROOT"       "Clone https://github.com/tencent-ailab/grover into it, or set GROVER_ROOT."
 require_file "$GROVER_PRETRAINED" "Download grover_large.pt from the GROVER repo, or set GROVER_PRETRAINED."
-require_file "$DATA_DIR/train_set.csv" "Dataset is available from the authors on request."
+TRAIN_INPUT="${TRAIN_CSV:-$DATA_DIR/train_set.csv}"
+require_file "$TRAIN_INPUT"            "Dataset is available from the authors on request."
 require_file "$DATA_DIR/test_set.csv"  "Dataset is available from the authors on request."
+require_file "$VAL_CSV"                "VAL_CSV was set but does not exist."
 
 PREPARED_DIR="$DATA_DIR/grover_prepared"
 SAVE_DIR="${SAVE_DIR:-$DATA_DIR/finetuned_model_grover}"
 mkdir -p "$PREPARED_DIR" "$SAVE_DIR"
 
-TRAIN_CSV="$PREPARED_DIR/train_set.csv"; TRAIN_NPZ="$PREPARED_DIR/train_set.npz"
-TEST_CSV="$PREPARED_DIR/test_set.csv";   TEST_NPZ="$PREPARED_DIR/test_set.npz"
-
-# --- Resolve the validation set ---
-VAL_CSV="${VAL_CSV:-}"
-if [ -n "$VAL_CSV" ]; then
-    require_file "$VAL_CSV" "VAL_CSV was set but does not exist."
-    VAL_PREPARED="$PREPARED_DIR/val_set.csv"; VAL_NPZ="$PREPARED_DIR/val_set.npz"
-else
-    VAL_PREPARED="$TEST_CSV"; VAL_NPZ="$TEST_NPZ"
-fi
+TRAIN_PREPARED="$PREPARED_DIR/train_set.csv"; TRAIN_NPZ="$PREPARED_DIR/train_set.npz"
+TEST_CSV="$PREPARED_DIR/test_set.csv";        TEST_NPZ="$PREPARED_DIR/test_set.npz"
+VAL_PREPARED="$PREPARED_DIR/val_set.csv";     VAL_NPZ="$PREPARED_DIR/val_set.npz"
 
 # --- Step 1: numeric labels for GROVER ---
 echo "[1/3] Preparing CSVs..."
-python "$REPO_ROOT/grover_addons/prepare_grover_training.py" --input_csv "$DATA_DIR/train_set.csv" --output_csv "$TRAIN_CSV"
-python "$REPO_ROOT/grover_addons/prepare_grover_training.py" --input_csv "$DATA_DIR/test_set.csv"  --output_csv "$TEST_CSV"
-if [ -n "$VAL_CSV" ]; then
-    python "$REPO_ROOT/grover_addons/prepare_grover_training.py" --input_csv "$VAL_CSV" --output_csv "$VAL_PREPARED"
-fi
+python "$REPO_ROOT/grover_addons/prepare_grover_training.py" --input_csv "$TRAIN_INPUT"          --output_csv "$TRAIN_PREPARED"
+python "$REPO_ROOT/grover_addons/prepare_grover_training.py" --input_csv "$DATA_DIR/test_set.csv" --output_csv "$TEST_CSV"
+python "$REPO_ROOT/grover_addons/prepare_grover_training.py" --input_csv "$VAL_CSV"              --output_csv "$VAL_PREPARED"
 
 # --- Step 2: RDKit 2D normalized features (217-dim) ---
 echo "[2/3] Generating RDKit features..."
@@ -51,9 +59,9 @@ gen_features() {  # $1 = prepared csv, $2 = output npz
         --features_generator rdkit_2d_normalized --restart
 }
 cd "$GROVER_ROOT"
-gen_features "$TRAIN_CSV" "$TRAIN_NPZ"
+gen_features "$TRAIN_PREPARED" "$TRAIN_NPZ"
 gen_features "$TEST_CSV"  "$TEST_NPZ"
-[ -n "$VAL_CSV" ] && gen_features "$VAL_PREPARED" "$VAL_NPZ"
+gen_features "$VAL_PREPARED" "$VAL_NPZ"
 
 # --- Hyperparameters (as used in the paper) ---
 INIT_LR=0.0002; MAX_LR=0.00001; FINAL_LR=0.00001
@@ -65,7 +73,7 @@ FFN_NUM_LAYERS=3; FFN_HIDDEN_SIZE=200; ENSEMBLE_SIZE=1
 # --- Step 3: finetune ---
 echo "[3/3] Finetuning GROVER..."
 python -W ignore::DeprecationWarning main.py finetune \
-    --data_path "$TRAIN_CSV" \
+    --data_path "$TRAIN_PREPARED" \
     --features_path "$TRAIN_NPZ" \
     --separate_val_path "$VAL_PREPARED" \
     --separate_val_features_path "$VAL_NPZ" \

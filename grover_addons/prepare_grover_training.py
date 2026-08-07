@@ -72,7 +72,8 @@ def main():
     
     # Read input CSV
     print(f"Reading CSV file: {args.input_csv}")
-    input_df = pd.read_csv(args.input_csv)
+    # sep=None sniffs the delimiter; both comma- and semicolon-separated splits occur.
+    input_df = pd.read_csv(args.input_csv, sep=None, engine='python')
     
     print(f"Input shape: {input_df.shape}")
     print(f"Original columns: {input_df.columns.tolist()}")

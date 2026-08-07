@@ -18,3 +18,8 @@ descriptastorus>=2.6   # required by GROVER's rdkit_2d_normalized features
 # GROVER itself is NOT a pip package. Clone it separately:
 #   git clone https://github.com/tencent-ailab/grover external/grover
 #   pip install -r external/grover/requirements.txt
+
+# Optional -- only needed to generate Mordred or PaDEL descriptors for NEW molecules.
+# The dataset archive ships the caches used in the paper, so reproduction does not
+# need these. PaDEL additionally requires a Java runtime.
+#   pip install scikit-fingerprints padel-pywrapper

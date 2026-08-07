@@ -1,18 +1,18 @@
 #!/bin/bash
 #
-# Train one (GROVER representation, classifier) combination.
+# Train one (representation, classifier) combination. ILLUSTRATIVE -- see src/train_heads.py.
 #
 # Usage:
-#   scripts/train_predictive_model.sh <fp_type> <model_type>
-#     <fp_type>    base_grover | finetuned_grover
+#   scripts/train_heads.sh <fp_type> <model_type>
+#     <fp_type>    ecfp4 | rdkit | mordred | padel | base_grover | finetuned_grover
 #     <model_type> rf | xgb | mlp
 #
 # Example:
-#   scripts/train_predictive_model.sh finetuned_grover rf
+#   scripts/train_heads.sh finetuned_grover rf
 #
 # To train all six combinations:
 #   for fp in base_grover finetuned_grover; do
-#     for m in rf xgb mlp; do scripts/train_predictive_model.sh $fp $m; done
+#     for m in rf xgb mlp; do scripts/train_heads.sh $fp $m; done
 #   done
 #
 # Embeddings must already exist -- see scripts/gen_grover_fingerprint.sh.
@@ -20,8 +20,8 @@
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/config.sh"
 
-FP_TYPE="${1:?usage: $0 <base_grover|finetuned_grover> <rf|xgb|mlp>}"
-MODEL_TYPE="${2:?usage: $0 <base_grover|finetuned_grover> <rf|xgb|mlp>}"
+FP_TYPE="${1:?usage: $0 <ecfp4|rdkit|mordred|padel|base_grover|finetuned_grover> <rf|xgb|mlp>}"
+MODEL_TYPE="${2:?usage: $0 <ecfp4|rdkit|mordred|padel|base_grover|finetuned_grover> <rf|xgb|mlp>}"
 
 require_file "$DATA_DIR/train_set.csv" "Dataset is available from the authors on request."
 require_file "$DATA_DIR/test_set.csv"  "Dataset is available from the authors on request."

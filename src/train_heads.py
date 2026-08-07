@@ -1,16 +1,24 @@
 """
-Train a downstream classifier on GROVER embeddings.
+Train one classifier head. ILLUSTRATIVE -- this is not the reproduction path.
 
-Representations (--fp_type):
-  base_grover        5017-d embeddings from the pretrained GROVER checkpoint (zero-shot)
-  finetuned_grover   5017-d embeddings from the HDAC-finetuned GROVER checkpoint
+This records how the published heads were fitted, with the hyperparameters that
+were used. It will NOT reproduce the published weights bit for bit: the result
+depends on library versions, thread counts and GPU non-determinism, none of which
+are pinned here. The trained models are distributed directly in the dataset
+archive, and scripts/reproduce_all.sh loads those.
 
+Use this to see the procedure, or to fit heads on your own data. To check our
+numbers, use the reproduction path.
+
+Representations (--fp_type): any of the six under <fpts_dir>/<fp_type>_fpts/.
 Classifiers (--model_type): rf | xgb | mlp
 
-Embeddings are produced by scripts/gen_grover_fingerprint.sh and are read from
-  <fpts_dir>/<fp_type>_fpts/{train,test}_set_fingerprint.npz   (key: 'fps')
+Features are read from
+  <fpts_dir>/<fp_type>_fpts/{train,test}_set_fingerprint.npz
 
-They are used unscaled, matching the finetuning pipeline.
+and used unscaled, matching the finetuning pipeline. Mordred is the exception --
+its descriptors are standardised, and src/hdac/models.py records how each saved
+head expects that to be applied.
 """
 import argparse
 import os
@@ -36,9 +44,10 @@ from torch.optim.lr_scheduler import CosineAnnealingLR, ReduceLROnPlateau
 from xgboost import XGBClassifier
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from hdac.io import load_feature_matrix, read_labelled_csv  # noqa: E402
 from models.simple_mlp import SimpleMLP, Trainer  # noqa: E402
 
-FP_TYPES = ['base_grover', 'finetuned_grover']
+FP_TYPES = ['ecfp4', 'rdkit', 'mordred', 'padel', 'base_grover', 'finetuned_grover']
 MODEL_TYPES = ['rf', 'xgb', 'mlp']
 
 
@@ -94,32 +103,26 @@ def parse_args():
     p.add_argument('--mlp_val_split', type=float, default=0.1,
                    help='Fraction of the TRAINING set held out for MLP early stopping.')
 
-    # RF / XGB
-    p.add_argument('--n_estimators', type=int, default=200)
+    # RF / XGB. Defaults are the values used for the published models.
+    p.add_argument('--n_estimators', type=int, default=200, help='Random forest trees')
+    p.add_argument('--max_depth', type=int, default=None,
+                   help='Random forest depth; unset means nodes expand until pure')
     p.add_argument('--xgb_n_estimators', type=int, default=100)
-    p.add_argument('--xgb_learning_rate', type=float, default=0.001)
+    p.add_argument('--xgb_max_depth', type=int, default=6)
+    p.add_argument('--xgb_learning_rate', type=float, default=0.3)
+    p.add_argument('--scale_pos_weight', type=float, default=2.0,
+                   help='XGBoost positive-class weight, compensating class imbalance')
     return p.parse_args()
 
 
 def load_csv_data(csv_path):
-    df = pd.read_csv(csv_path)
-    df.columns = df.columns.str.strip()
-    if 'smiles' not in df.columns or 'labels' not in df.columns:
-        raise ValueError(f"CSV must contain 'smiles' and 'labels'. Found: {df.columns.tolist()}")
-    smiles = df['smiles'].str.strip().values
-    labels = df['labels']
+    """Smiles and labels, using the shared reader so the delimiter handling
+    cannot drift from the reproduction path."""
+    df, smiles_col, labels_col = read_labelled_csv(csv_path)
+    smiles = df[smiles_col].astype(str).str.strip().values
+    labels = df[labels_col]
     labels = labels.str.strip().values if labels.dtype == 'object' else labels.values
     return smiles, labels
-
-
-def load_grover_fingerprints(path):
-    if not os.path.exists(path):
-        raise FileNotFoundError(
-            f'GROVER fingerprints not found: {path}\n'
-            'Generate them first: scripts/gen_grover_fingerprint.sh <split> <base|finetuned>'
-        )
-    print(f'Loading GROVER fingerprints: {path}')
-    return np.load(path)['fps']
 
 
 def build_mlp_scheduler(optimizer, params, epochs):
@@ -170,8 +173,8 @@ def main():
     print(f'Train distribution: {np.bincount(y_train)} | Test distribution: {np.bincount(y_test)}')
 
     fp_dir = os.path.join(params.fpts_dir, f'{params.fp_type}_fpts')
-    X_train = load_grover_fingerprints(os.path.join(fp_dir, 'train_set_fingerprint.npz'))
-    X_test = load_grover_fingerprints(os.path.join(fp_dir, 'test_set_fingerprint.npz'))
+    X_train = load_feature_matrix(os.path.join(fp_dir, 'train_set_fingerprint.npz'))
+    X_test = load_feature_matrix(os.path.join(fp_dir, 'test_set_fingerprint.npz'))
     if len(X_train) != len(y_train) or len(X_test) != len(y_test):
         raise ValueError(
             f'Row mismatch: fingerprints ({len(X_train)}/{len(X_test)}) vs labels '
@@ -181,11 +184,15 @@ def main():
 
     trainer = None
     if params.model_type == 'rf':
-        model = RandomForestClassifier(n_estimators=params.n_estimators, random_state=params.random_seed)
+        model = RandomForestClassifier(n_estimators=params.n_estimators,
+                                       max_depth=params.max_depth,
+                                       random_state=params.random_seed)
         model.fit(X_train, y_train)
     elif params.model_type == 'xgb':
         model = XGBClassifier(n_estimators=params.xgb_n_estimators,
+                              max_depth=params.xgb_max_depth,
                               learning_rate=params.xgb_learning_rate,
+                              scale_pos_weight=params.scale_pos_weight,
                               eval_metric='logloss', random_state=params.random_seed)
         model.fit(X_train, y_train)
     else:
