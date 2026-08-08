@@ -179,6 +179,13 @@ and nothing inside the file records that. A mismatched cache produces confident 
 the wrong molecules rather than an error, so every loader here asserts row counts — do not bypass
 those checks.
 
+## Contact
+
+Questions about the code, the dataset, or requests for the archive of trained models:
+
+- congnguyen.research@outlook.com
+- dungdtm@hup.edu.vn
+
 ## Citation
 
 This code is for reviewing purpose.
