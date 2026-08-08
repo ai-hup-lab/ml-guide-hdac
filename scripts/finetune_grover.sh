@@ -25,7 +25,7 @@ if [ -z "${VAL_CSV:-}" ]; then
     echo "Error: VAL_CSV is not set." >&2
     echo "  A validation set disjoint from the test set is required: GROVER selects its" >&2
     echo "  best checkpoint on it, so reusing the test set biases the reported result." >&2
-    echo "  Create one with src/make_validation_split.py -- see the header of this script." >&2
+    echo "  The dataset archive supplies fit_set.csv and val_set.csv -- see this script header." >&2
     exit 1
 fi
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Train one (representation, classifier) combination. ILLUSTRATIVE -- see src/train_heads.py.
+# Train one (representation, classifier) combination. ILLUSTRATIVE -- see src/train_classifiers.py.
 #
 # Usage:
 #   scripts/train_heads.sh <fp_type> <model_type>
@@ -45,7 +45,7 @@ MLP_VAL_SPLIT="${MLP_VAL_SPLIT:-0.1}"
 
 echo "Training $FP_TYPE + $MODEL_TYPE -> $RESULTS_DIR/models/"
 
-python "$REPO_ROOT/src/train_predictive_model.py" \
+python "$REPO_ROOT/src/train_classifiers.py" \
     --train_csv "$DATA_DIR/train_set.csv" \
     --test_csv  "$DATA_DIR/test_set.csv" \
     --fpts_dir  "$DATA_DIR" \
