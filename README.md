@@ -157,7 +157,7 @@ scripts/gen_grover_fingerprint.sh test_set  finetuned
 REPRESENTATIONS=ecfp4,rdkit,mordred,padel scripts/prepare_features.sh
 
 # 4. Train a classifier
-scripts/train_heads.sh finetuned_grover rf
+scripts/train_classifiers.sh finetuned_grover rf
 ```
 
 ## Applying the models to new molecules

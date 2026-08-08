@@ -3,16 +3,16 @@
 # Train one (representation, classifier) combination. ILLUSTRATIVE -- see src/train_classifiers.py.
 #
 # Usage:
-#   scripts/train_heads.sh <fp_type> <model_type>
+#   scripts/train_classifiers.sh <fp_type> <model_type>
 #     <fp_type>    ecfp4 | rdkit | mordred | padel | base_grover | finetuned_grover
 #     <model_type> rf | xgb | mlp
 #
 # Example:
-#   scripts/train_heads.sh finetuned_grover rf
+#   scripts/train_classifiers.sh finetuned_grover rf
 #
-# To train all six combinations:
-#   for fp in base_grover finetuned_grover; do
-#     for m in rf xgb mlp; do scripts/train_heads.sh $fp $m; done
+# To train all eighteen combinations:
+#   for fp in ecfp4 rdkit mordred padel base_grover finetuned_grover; do
+#     for m in rf xgb mlp; do scripts/train_classifiers.sh $fp $m; done
 #   done
 #
 # Embeddings must already exist -- see scripts/gen_grover_fingerprint.sh.
