@@ -14,7 +14,10 @@ def read_input_table(input_path):
         return pd.read_excel(input_path)
 
     try:
-        return pd.read_csv(input_path)
+        # sep=None sniffs the delimiter. A semicolon-separated file does not raise
+        # ParserError -- it parses into a single column -- so the fallback below
+        # would never fire and the malformed frame would pass through silently.
+        return pd.read_csv(input_path, sep=None, engine='python')
     except pd.errors.ParserError:
         rows = []
         with open(input_path, 'r', encoding='utf-8') as handle:
