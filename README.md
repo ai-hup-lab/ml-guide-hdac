@@ -1,6 +1,6 @@
 # Machine learning-guided design and synthesis of benzimidazole-based HDAC inhibitors: prospective validation of a fine-tuned pretrained graph transformer
 
-![Graphical abstract: molecular 2D graphs are encoded by a fine-tuned GROVER representation model and classified by random forest, XGBoost and MLP heads; 60 designed compounds are screened down to 6 synthesised compounds of series IX; these are evaluated for HDAC inhibition, cytotoxicity, cell-cycle effects and apoptosis, with IXc inhibiting HDAC at 19.33 nM against 79.95 nM for SAHA.](documents/toc-graphic.png)
+![Graphical abstract: molecular 2D graphs are encoded by a fine-tuned GROVER representation model and classified by random forest, XGBoost and MLP classifiers; 60 designed compounds are screened down to 6 synthesised compounds of series IX; these are evaluated for HDAC inhibition, cytotoxicity, cell-cycle effects and apoptosis, with IXc inhibiting HDAC at 19.33 nM against 79.95 nM for SAHA.](documents/toc-graphic.png)
 
 Code accompanying the manuscript. A pretrained [GROVER](https://github.com/tencent-ailab/grover)
 graph transformer is fine-tuned on HDAC activity data and used to prioritise synthetically
@@ -63,15 +63,15 @@ No GPU is required: the cached embeddings mean the GROVER encoder is never run.
 src/
   hdac/                    shared building blocks; each convention defined once
     io.py                  CSV delimiter handling, feature-cache layouts, row-count checks
-    models.py              locating heads, Mordred scaling, the label decision rule
+    models.py              locating classifiers, Mordred scaling, the label decision rule
     metrics.py             the five reported metrics, fold summary statistics
     features.py            fingerprint generators (Mordred/PaDEL optional)
   reproduce_heldout.py     18 models on the held-out test set
-  reproduce_cv.py          90 fold heads on their fold hold-outs
+  reproduce_cv.py          90 fold classifiers on their fold hold-outs
   screen.py                score a compound series
   check_expected.py        compare a run against expected_results/
   prepare_features.py      build rule-based caches from SMILES
-  train_heads.py           ILLUSTRATIVE: how the heads were fitted
+  train_classifiers.py     ILLUSTRATIVE: how the classifiers were fitted
   models/simple_mlp.py     the MLP architecture
 scripts/                   shell wrappers; paths configured in config.sh
 grover_addons/             SMILES -> GROVER input conversion
@@ -156,7 +156,7 @@ scripts/gen_grover_fingerprint.sh test_set  finetuned
 # 3. Build the rule-based descriptor caches
 REPRESENTATIONS=ecfp4,rdkit,mordred,padel scripts/prepare_features.sh
 
-# 4. Train a head
+# 4. Train a classifier
 scripts/train_heads.sh finetuned_grover rf
 ```
 
