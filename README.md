@@ -6,10 +6,7 @@ Code accompanying the manuscript. A pretrained [GROVER](https://github.com/tence
 graph transformer is fine-tuned on HDAC activity data and used to prioritise synthetically
 accessible candidates from a designed series. The predictions are then validated prospectively:
 the selected compounds were synthesised, and evaluated by docking, molecular dynamics and
-biological assay.
-
-This repository holds **code only**. The dataset and the trained model weights are available from
-the authors on request; see [ARCHIVE.md](ARCHIVE.md).
+biological assay. The dataset and the trained model weights are available from the authors on request, see [ARCHIVE.md](ARCHIVE.md).
 
 ## What the code does
 
