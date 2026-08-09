@@ -14,7 +14,7 @@ This repository holds **code only**. The dataset and the trained model weights a
 single archive, `hdac-reproduction-archive.zip` (3.2 GB):
 
 **https://gofile.me/7YCnG/JFuqjR9Do**
-&nbsp;&nbsp;SHA-256 `7a4d7af0f0e425175cc130efa2b2666cf121c04e08175b18b60ca524c7d4defb`
+&nbsp;&nbsp;SHA-256 `2dd643a81df49e5cee0229a4a8b90da91fe29f52f92d640adb7f89034c6f910c`
 
 See [ARCHIVE.md](ARCHIVE.md) for what it contains and how to use it.
 

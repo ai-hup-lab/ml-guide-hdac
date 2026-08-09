@@ -10,14 +10,14 @@ as a single archive, linked below.
 | | |
 |---|---|
 | File | `hdac-reproduction-archive.zip` |
-| Size | 3,354,657,594 bytes (3.2 GB) |
-| SHA-256 | `7a4d7af0f0e425175cc130efa2b2666cf121c04e08175b18b60ca524c7d4defb` |
+| Size | 3,354,658,741 bytes (3.2 GB) |
+| SHA-256 | `2dd643a81df49e5cee0229a4a8b90da91fe29f52f92d640adb7f89034c6f910c` |
 
 Check the download before unzipping it:
 
 ```bash
 sha256sum hdac-reproduction-archive.zip
-# expect 7a4d7af0f0e425175cc130efa2b2666cf121c04e08175b18b60ca524c7d4defb
+# expect 2dd643a81df49e5cee0229a4a8b90da91fe29f52f92d640adb7f89034c6f910c
 ```
 
 If the checksum does not match, or the link does not resolve, contact the authors — see the
