@@ -143,10 +143,9 @@ uses the fit/val separation.
 
 ## Training
 
-**Retraining will not reproduce the distributed weights bit for bit.** Results depend on library
-versions, thread counts and GPU non-determinism, none of which are pinned here. The training
-entry points document the procedure and the published hyperparameters; the models themselves are
-distributed directly. To verify our numbers, use the reproduction path above.
+The training entry points document the procedure and the published hyperparameters; the trained
+models themselves are distributed in the archive. To verify our numbers, use the reproduction
+path above.
 
 ```bash
 # 1. Fine-tune GROVER on the fit split, selecting on the validation split
