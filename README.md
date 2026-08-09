@@ -204,4 +204,13 @@ scripts in `grover_addons/` are ours and are designed to run against that tree.
 
 ## License and third-party code
 
-This repository is released under the [MIT License](LICENSE).
+The **code** in this repository is released under the [MIT License](LICENSE).
+
+The **dataset and trained model weights** distributed in the archive are released under
+[Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/).
+You may share and adapt them, including commercially, provided you give appropriate credit, link
+to the licence, and indicate whether changes were made.
+
+Third-party component: `results/pretrained_model_grover/grover_large.pt` in the archive is the
+pretrained checkpoint from [GROVER](https://github.com/tencent-ailab/grover), released by its
+authors under the MIT License. It is not our work and is redistributed under that licence.

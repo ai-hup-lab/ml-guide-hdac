@@ -74,9 +74,19 @@ checks this automatically and fails if anything disagrees.
 counts and GPU non-determinism that are not pinned. This is why the models are distributed rather
 than the recipe alone.
 
+## Licence
+
+The data and trained model weights in this archive are released under
+[Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/).
+You may share and adapt them, including commercially, provided you give appropriate credit, link
+to the licence, and indicate whether changes were made. Please cite the article and the code
+deposit, https://doi.org/10.5281/zenodo.21863892.
+
+The analysis code in the repository is separately licensed under the MIT License.
+
 ## Third-party components
 
 `results/pretrained_model_grover/grover_large.pt` is the pretrained checkpoint from
-[GROVER](https://github.com/tencent-ailab/grover), released under the MIT License. It is included
-so the archive is self-contained; it is not our work and can also be downloaded from that
-repository.
+[GROVER](https://github.com/tencent-ailab/grover), released by its authors under the MIT License.
+It is included so the archive is self-contained; it is not our work, is redistributed under that
+licence rather than CC-BY-4.0, and can also be downloaded from that repository.
