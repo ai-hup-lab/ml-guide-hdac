@@ -1,11 +1,27 @@
 # The dataset archive
 
-This repository ships code only. The data and the trained model weights are distributed
-separately, on request, while the manuscript is under review.
+This repository ships code only. The data and the trained model weights are distributed separately
+as a single archive, linked below.
 
 ## Obtaining it
 
-Request `hdac-reproduction-archive.zip` (about 3.2 GB) from the authors.
+**Download: https://gofile.me/7YCnG/JFuqjR9Do**
+
+| | |
+|---|---|
+| File | `hdac-reproduction-archive.zip` |
+| Size | 3,354,657,594 bytes (3.2 GB) |
+| SHA-256 | `7a4d7af0f0e425175cc130efa2b2666cf121c04e08175b18b60ca524c7d4defb` |
+
+Check the download before unzipping it:
+
+```bash
+sha256sum hdac-reproduction-archive.zip
+# expect 7a4d7af0f0e425175cc130efa2b2666cf121c04e08175b18b60ca524c7d4defb
+```
+
+If the checksum does not match, or the link does not resolve, contact the authors — see the
+Contact section of the README.
 
 ## Using it
 
