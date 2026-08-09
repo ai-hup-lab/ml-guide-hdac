@@ -70,8 +70,9 @@ authors:
     orcid: "https://orcid.org/0000-0002-3098-3541"
     affiliation: >-
       Department of Pharmacology, Hanoi University of Pharmacy, Hanoi 10000, Vietnam
-  - family-names: Nguyen
-    given-names: Hai Nam
+  # Indexed under the family name "Nam", matching this author's ORCID record.
+  - family-names: Nam
+    given-names: Nguyen Hai
     email: namnh@hotmail.com
     orcid: "https://orcid.org/0000-0001-8475-2530"
     affiliation: >-
