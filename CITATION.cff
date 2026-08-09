@@ -15,7 +15,15 @@ type: software
 version: 1.0.0
 date-released: "2026-08-10"
 license: MIT
+doi: 10.5281/zenodo.21863892
 repository-code: "https://github.com/ai-drugs-hup/ml-guide-hdac"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.21863892
+    description: Concept DOI, always resolving to the most recent version
+  - type: doi
+    value: 10.5281/zenodo.21863893
+    description: Version DOI for release v1.0.0
 keywords:
   - HDAC
   - histone deacetylase

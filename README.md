@@ -1,5 +1,7 @@
 # Machine learning-guided design and synthesis of benzimidazole-based HDAC inhibitors: prospective validation of a fine-tuned pretrained graph transformer
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21863892.svg)](https://doi.org/10.5281/zenodo.21863892)
+
 ![Graphical abstract: molecular 2D graphs are encoded by a fine-tuned GROVER representation model and classified by random forest, XGBoost and MLP classifiers; 60 designed compounds are screened down to 6 synthesised compounds of series IX; these are evaluated for HDAC inhibition, cytotoxicity, cell-cycle effects and apoptosis, with IXc inhibiting HDAC at 19.33 nM against 79.95 nM for SAHA.](documents/toc-graphic.png)
 
 Code accompanying the manuscript. A pretrained [GROVER](https://github.com/tencent-ailab/grover)
