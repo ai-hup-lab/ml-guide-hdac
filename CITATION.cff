@@ -1,0 +1,93 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: >-
+  ml-guide-hdac: code for "Machine learning-guided design and synthesis of benzimidazole-based
+  HDAC inhibitors: prospective validation of a fine-tuned pretrained graph transformer"
+abstract: >-
+  Code accompanying the manuscript. A pretrained GROVER graph transformer is fine-tuned on HDAC
+  activity data and used, as a three-classifier ensemble, to prioritise synthetically accessible
+  candidates from sixty designed compounds; series IX was the only series predicted active by all
+  three classifiers, and all six members were synthesised and biologically evaluated. The
+  repository loads the distributed models and reproduces the held-out benchmark, the five-fold
+  cross-validation and the virtual screening, checking every output against committed reference
+  values.
+type: software
+version: 1.0.0
+date-released: "2026-08-10"
+license: MIT
+repository-code: "https://github.com/ai-drugs-hup/ml-guide-hdac"
+keywords:
+  - HDAC
+  - histone deacetylase
+  - GROVER
+  - graph transformer
+  - molecular representation
+  - transfer learning
+  - virtual screening
+  - QSAR
+  - benzimidazole
+  - hydroxamic acid
+  - cheminformatics
+authors:
+  - family-names: Truong
+    given-names: Duc Toan
+    email: toan.truongduc@vlu.edu.vn
+    orcid: "https://orcid.org/0000-0001-5562-621X"
+    affiliation: >-
+      Laboratory for Chemical Computation and Modeling, Institute for Computational Science and
+      Artificial Intelligence, Van Lang University, Ho Chi Minh City 700000, Vietnam
+  - family-names: Nguyen
+    given-names: Thanh Cong
+    email: congnguyen.research@outlook.com
+    orcid: "https://orcid.org/0000-0002-6247-8128"
+    affiliation: >-
+      Department of Computer Science, VNU University of Engineering and Technology, 144 Xuan Thuy,
+      Cau Giay, Hanoi 10000, Vietnam
+  - family-names: Nguyen
+    given-names: Thi Thuan
+    email: thuannt@hup.edu.vn
+    orcid: "https://orcid.org/0009-0000-8408-2776"
+    affiliation: >-
+      Faculty of Pharmaceutical Chemistry and Technology, Hanoi University of Pharmacy,
+      Hanoi 10000, Vietnam
+  - family-names: Tran
+    given-names: Thi Thuy Mai
+    email: maithuy2222004@gmail.com
+    orcid: "https://orcid.org/0009-0006-3912-5056"
+    affiliation: >-
+      Faculty of Pharmaceutical Chemistry and Technology, Hanoi University of Pharmacy,
+      Hanoi 10000, Vietnam
+  - family-names: Duong
+    given-names: Tien Anh
+    email: anhdt@hup.edu.vn
+    orcid: "https://orcid.org/0000-0002-0695-7992"
+    affiliation: >-
+      Faculty of Pharmaceutical Chemistry and Technology, Hanoi University of Pharmacy,
+      Hanoi 10000, Vietnam
+  - family-names: Pham
+    given-names: Duc-Vinh
+    email: vinhpd@hup.edu.vn
+    orcid: "https://orcid.org/0000-0002-3098-3541"
+    affiliation: >-
+      Department of Pharmacology, Hanoi University of Pharmacy, Hanoi 10000, Vietnam
+  - family-names: Nguyen
+    given-names: Hai Nam
+    email: namnh@hotmail.com
+    orcid: "https://orcid.org/0000-0001-8475-2530"
+    affiliation: >-
+      Faculty of Pharmaceutical Chemistry and Technology, Hanoi University of Pharmacy,
+      Hanoi 10000, Vietnam
+  - family-names: Baecker
+    given-names: Daniel
+    email: d.baecker@fu-berlin.de
+    orcid: "https://orcid.org/0000-0002-1963-9838"
+    affiliation: >-
+      Department of Pharmaceutical and Medicinal Chemistry, Institute of Pharmacy,
+      Freie Universität Berlin, Königin-Luise-Straße 2+4, 14195 Berlin, Germany
+  - family-names: Do
+    given-names: Thi Mai Dung
+    email: dungdtm@hup.edu.vn
+    orcid: "https://orcid.org/0000-0003-3326-2464"
+    affiliation: >-
+      Faculty of Pharmaceutical Chemistry and Technology, Hanoi University of Pharmacy,
+      Hanoi 10000, Vietnam
